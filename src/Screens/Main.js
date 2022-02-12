@@ -155,7 +155,7 @@ function Main() {
       }
 
       const _startTime = new Date(
-        (await AsyncStorage.getItem('startTime')) || new Date()
+        JSON.parse(await AsyncStorage.getItem('startTime')) || new Date() // Parse 'null' to null
       );
       const _started = JSON.parse(
         (await AsyncStorage.getItem('started')) || false
@@ -181,8 +181,8 @@ function Main() {
         startTicking();
       }
 
-      if (_started && !_paused && _duration) {
-        printTime();
+      if (_started && _duration && _startTime) {
+        printTime(_duration, _startTime);
       }
 
       initializedRef.current = true;
