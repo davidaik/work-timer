@@ -118,6 +118,35 @@ function Main() {
     }
   }, [duration, paused, startTicking, startTime]);
 
+  const handleResetClick = useCallback(() => {
+    Alert.alert('Reset timer?', 'This will reset your timer to zero.', [
+      {
+        text: 'Cancel',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Reset',
+        onPress: async () => {
+          try {
+            clearInterval(intervalId.current);
+
+            await AsyncStorage.setItem('duration', JSON.stringify(0));
+            await AsyncStorage.setItem('started', JSON.stringify(false));
+            await AsyncStorage.setItem('paused', JSON.stringify(false));
+            await AsyncStorage.setItem('startTime', JSON.stringify(null));
+
+            setPaused(false);
+            setStarted(false);
+            setStartTime(null);
+            setDuration(0);
+            setTimeString('00:00:00');
+          } catch (err) {}
+        },
+      },
+    ]);
+  }, []);
+
   // Initialize values from storage
   useEffect(() => {
     (async () => {
@@ -159,35 +188,6 @@ function Main() {
       initializedRef.current = true;
     })();
   }, [printTime, startTicking]);
-
-  const handleResetClick = useCallback(() => {
-    Alert.alert('Reset timer?', 'This will reset your timer to zero.', [
-      {
-        text: 'Cancel',
-        onPress: () => {},
-        style: 'cancel',
-      },
-      {
-        text: 'Reset',
-        onPress: async () => {
-          try {
-            clearInterval(intervalId.current);
-
-            await AsyncStorage.setItem('duration', JSON.stringify(0));
-            await AsyncStorage.setItem('started', JSON.stringify(false));
-            await AsyncStorage.setItem('paused', JSON.stringify(false));
-            await AsyncStorage.setItem('startTime', JSON.stringify(null));
-
-            setPaused(false);
-            setStarted(false);
-            setStartTime(null);
-            setDuration(0);
-            setTimeString('00:00:00');
-          } catch (err) {}
-        },
-      },
-    ]);
-  }, []);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
