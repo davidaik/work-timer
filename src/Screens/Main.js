@@ -101,7 +101,7 @@ function Main() {
         clearInterval(intervalId.current);
 
         await AsyncStorage.setItem('duration', JSON.stringify(totalDuration));
-        await AsyncStorage.setItem('startTime', JSON.stringify(null));
+        await AsyncStorage.removeItem('startTime');
       } else {
         // Resume the timer
         const _startTime = new Date();
@@ -134,7 +134,7 @@ function Main() {
             await AsyncStorage.setItem('duration', JSON.stringify(0));
             await AsyncStorage.setItem('started', JSON.stringify(false));
             await AsyncStorage.setItem('paused', JSON.stringify(false));
-            await AsyncStorage.setItem('startTime', JSON.stringify(null));
+            await AsyncStorage.removeItem('startTime');
 
             setPaused(false);
             setStarted(false);
@@ -154,38 +154,42 @@ function Main() {
         return;
       }
 
-      const _startTime = new Date(
-        JSON.parse(await AsyncStorage.getItem('startTime')) || new Date() // Parse 'null' to null
-      );
-      const _started = JSON.parse(
-        (await AsyncStorage.getItem('started')) || false
-      );
-      const _duration = parseInt(
-        (await AsyncStorage.getItem('duration')) || '0',
-        10
-      );
-      const _paused = JSON.parse(
-        (await AsyncStorage.getItem('paused')) || false
-      );
+      try {
+        const _startTime = new Date(
+          (await AsyncStorage.getItem('startTime')) || new Date()
+        );
+        const _started = JSON.parse(
+          (await AsyncStorage.getItem('started')) || false
+        );
+        const _duration = parseInt(
+          (await AsyncStorage.getItem('duration')) || '0',
+          10
+        );
+        const _paused = JSON.parse(
+          (await AsyncStorage.getItem('paused')) || false
+        );
 
-      setStarted(_started);
-      setStartTime(_startTime);
+        setStarted(_started);
+        setStartTime(_startTime);
 
-      if (_duration) {
-        setDuration(_duration);
+        if (_duration) {
+          setDuration(_duration);
+        }
+
+        setPaused(_paused);
+
+        if (_started && !_paused) {
+          startTicking();
+        }
+
+        if (_started && _duration && _startTime) {
+          printTime(_duration, _startTime);
+        }
+
+        initializedRef.current = true;
+      } catch (err) {
+        console.log('Error initializing values from storage.', err);
       }
-
-      setPaused(_paused);
-
-      if (_started && !_paused) {
-        startTicking();
-      }
-
-      if (_started && _duration && _startTime) {
-        printTime(_duration, _startTime);
-      }
-
-      initializedRef.current = true;
     })();
   }, [printTime, startTicking]);
 
