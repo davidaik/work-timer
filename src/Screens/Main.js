@@ -216,54 +216,56 @@ function Main() {
         <Text
           style={{ ...styles.timer, ...(paused ? styles.timerPaused : {}) }}
         >
-          {timeString}
+          {initializedRef.current ? timeString : ''}
         </Text>
       </View>
 
       <View style={styles.footer}>
-        {started ? (
-          <>
-            <View style={styles.buttonContainer}>
-              <TouchableNativeFeedback
-                key="reset"
-                background={TouchableNativeFeedback.Ripple('#fff', false)}
-                onPress={handleResetClick}
-              >
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>RESET</Text>
-                </View>
-              </TouchableNativeFeedback>
-            </View>
-
-            <View style={styles.buttonSeparator} />
-
-            <View style={styles.buttonContainer}>
-              <TouchableNativeFeedback
-                key="pause"
-                background={TouchableNativeFeedback.Ripple('#fff', false)}
-                onPress={handlePauseClick}
-              >
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>
-                    {paused ? 'RESUME' : 'PAUSE'}
-                  </Text>
-                </View>
-              </TouchableNativeFeedback>
-            </View>
-          </>
-        ) : (
-          <View style={styles.buttonContainer}>
-            <TouchableNativeFeedback
-              key="start"
-              background={TouchableNativeFeedback.Ripple('#fff', false)}
-              onPress={handleStartClick}
-            >
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>START</Text>
+        {initializedRef.current ? (
+          started ? (
+            <>
+              <View style={styles.buttonContainer}>
+                <TouchableNativeFeedback
+                  key="reset"
+                  background={TouchableNativeFeedback.Ripple('#fff', false)}
+                  onPress={handleResetClick}
+                >
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>RESET</Text>
+                  </View>
+                </TouchableNativeFeedback>
               </View>
-            </TouchableNativeFeedback>
-          </View>
-        )}
+
+              <View style={styles.buttonSeparator} />
+
+              <View style={styles.buttonContainer}>
+                <TouchableNativeFeedback
+                  key="pause"
+                  background={TouchableNativeFeedback.Ripple('#fff', false)}
+                  onPress={handlePauseClick}
+                >
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>
+                      {paused ? 'RESUME' : 'PAUSE'}
+                    </Text>
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+            </>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <TouchableNativeFeedback
+                key="start"
+                background={TouchableNativeFeedback.Ripple('#fff', false)}
+                onPress={handleStartClick}
+              >
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>START</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </View>
+          )
+        ) : null}
       </View>
     </View>
   );
